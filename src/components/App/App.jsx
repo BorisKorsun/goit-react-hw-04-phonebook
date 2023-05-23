@@ -71,12 +71,10 @@ export default function App() {
     };
 
     const deleteContact = (id) => {
-        setContacts(s => {
-            const contactsAfterDelete = contacts.filter((contact) => {
-                return contact.id !== id;
-            });
-            return [...contactsAfterDelete]
+        const contactsAfterDelete = contacts.filter((contact) => {
+            return contact.id !== id;
         });
+        setContacts([...contactsAfterDelete])
     };
 
     return (
