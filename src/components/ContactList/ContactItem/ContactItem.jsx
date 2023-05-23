@@ -1,4 +1,4 @@
-const ContactItem = ({ name, number, onClick, id}) => {
+export default function ContactItem ({ name, number, onClick, id}) {
     return (
         <>
          <p>{name}: {number}</p>
@@ -6,5 +6,3 @@ const ContactItem = ({ name, number, onClick, id}) => {
         </>
     )
 };
-
-export default ContactItem;

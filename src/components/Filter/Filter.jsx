@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
 
-const Filter = ({ onChange, value }) => {
+export default function Filter ({ onChange, value }) {
     return <Formik>
         <Form>
             <label>
@@ -15,8 +15,6 @@ const Filter = ({ onChange, value }) => {
         </Form>
     </Formik>
 };
-
-export default Filter;
 
 Filter.propTypes = {
     onChange: PropTypes.func.isRequired,

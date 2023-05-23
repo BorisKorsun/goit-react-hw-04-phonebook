@@ -1,7 +1,7 @@
 import { Field } from 'formik';
 import PropTypes from 'prop-types'
 
-const FormField = ({ name, onChange, value, pattern }) => {
+export default function FormField ({ name, onChange, value, pattern }) {
     return (
     <label>
        {name}
@@ -14,8 +14,6 @@ const FormField = ({ name, onChange, value, pattern }) => {
         />
     </label>)
 };
-
-export default FormField;
 
 FormField.propTypes = {
     name: PropTypes.string.isRequired,

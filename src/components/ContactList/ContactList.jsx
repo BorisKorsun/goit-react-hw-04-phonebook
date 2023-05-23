@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 import ContactItem from './ContactItem';
 
-const ContactList = ({ contacts, onClick }) => {
+export default function ContactList ({ contacts, onClick }) {
     return <ul>
         {contacts.map(({name, id, number}) => {
             return(
@@ -18,8 +18,6 @@ const ContactList = ({ contacts, onClick }) => {
         })}
     </ul>
 };
-
-export default ContactList;
 
 ContactList.propTypes = {
     contacts: PropTypes.arrayOf(
