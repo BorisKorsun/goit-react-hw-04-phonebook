@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { useEffect, useState, useRef } from "react";
 import { nanoid } from 'nanoid';
 
 import Section from "components/Section";
@@ -13,65 +13,55 @@ const defaultContacts = [
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
 ];
 
-class App extends Component {
-    state = {
-        contacts: defaultContacts,
-        filter: '',
-    };
+export default function App() {
+    const [contacts, setContacts] = useState(() => {
+        return defaultContacts;
+    })
+    const [filter, setFilter] = useState('');
+    const isFirstRender = useRef(true)
 
-    componentDidMount() {
-        const savedContacts = JSON.parse(localStorage.getItem('contacts'))
-
+    useEffect(() => {
+        const savedContacts = JSON.parse(window.localStorage.getItem('contacts'))
         if (!savedContacts) {
             return;
         };
+        setContacts(savedContacts);
+    }, []);
 
-        this.setState({
-            contacts: savedContacts,
-        });
-    }
+    useEffect(() => {
+        if (isFirstRender.current){
+            isFirstRender.current = false;
+            return;
+        };
+        return localStorage.setItem('contacts', JSON.stringify(contacts))
+    }, [contacts]);
 
-    componentDidUpdate(prevProps, prevState) {
-        const nextContacts = this.state.contacts;
-        const prevContacts = prevState.contacts;
-
-        if (prevContacts !== nextContacts) {
-            return localStorage.setItem('contacts', JSON.stringify(nextContacts))
-        }
-    };
-
-    handleSubmit = ({ name, number }) => {
-        const { contacts } = this.state;
+    const handleSubmit = ({ name, number }) => {
         const isContact = contacts.find(contact => {
             return contact.name === name;
         })
 
-        this.setState((prevState) => {
-            if (isContact) {
-                alert(`${name} is already exists`)
-                return;
-            } else {
-                return {
-                    contacts: [{
-                        name,
-                        number,
-                        id: nanoid(),
-                    }, ...prevState.contacts],
-                };
-            };
+        if(isContact) {
+            alert(`${name} is already exists`);
+            return;
+        };
+
+        setContacts(s => {
+            return [{
+                name,
+                number,
+                id: nanoid()
+            } ,...s]
         });
     };
 
-    onChangeFilter = (e) => {
+    const onChangeFilter = (e) => {
         const filter = e.currentTarget.value
-        this.setState({
-            filter: filter,
-        });
 
+        setFilter(filter);
     };
 
-    visibleContacts = () => {
-        const { filter, contacts } = this.state
+    const visibleContacts = () => {
         const normalizedFilter = filter.toLowerCase()
 
         const filteredContacts = contacts.filter(({ name }) => {
@@ -80,30 +70,27 @@ class App extends Component {
         return filteredContacts;
     };
 
-    deleteContact = (id) => {
-        this.setState((prevState) => {
-            const { contacts } = this.state
+    const deleteContact = (id) => {
+        setContacts(s => {
             const contactsAfterDelete = contacts.filter((contact) => {
                 return contact.id !== id;
             });
-            return {contacts: [...contactsAfterDelete]}
-        })
-    }
+            return [...contactsAfterDelete]
+        });
+    };
 
-    render() {
-      return <>
+    return (
+        <>
             <Section title='Phonebook'>
-                <PhonebookForm onSubmit={this.handleSubmit}></PhonebookForm>
+                <PhonebookForm onSubmit={handleSubmit}></PhonebookForm>
             </Section>
 
             <Section title="Contacts">
                 <Filter
-                    onChange={this.onChangeFilter}
+                    onChange={onChangeFilter}
                 />
-                <ContactList onClick={this.deleteContact}contacts={this.visibleContacts()}/>
+                <ContactList onClick={deleteContact}contacts={visibleContacts()}/>
             </Section>
       </>
-    };
+    )
   };
-
-export default App;
